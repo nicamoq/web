@@ -150,6 +150,21 @@ body{
 	cursor: pointer;
 }
 
+button[type="button"] {
+    border: 0;
+    background: #409245;
+    font-weight: bold;
+    display: block;
+    margin: 30px auto;
+    text-align: center;
+    border: 2px solid #409245;
+    padding: 10px 10px;
+    outline: none;
+    color: white;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
 
 
 .box input[type="button"]:hover{
