@@ -190,7 +190,10 @@ button[type="button"] {
   color: #fff;
 }
 
-
+#result {
+  color: white;
+  font-size: 10px;
+}
 
 
 
