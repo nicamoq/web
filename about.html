@@ -39,7 +39,7 @@
 			var id = document.getElementById("id-input").value;
 			// read the data from the text file
 			var xhr = new XMLHttpRequest();
-			xhr.open("GET", "https://pastebin.com/raw/wddrJFTm", true);
+			xhr.open("GET", "data.txt", true);
 			xhr.onreadystatechange = function() {
 				if (xhr.readyState === 4 && xhr.status === 200) {
 					// split the data into lines
