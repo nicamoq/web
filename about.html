@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<link rel='icon' href='favicon.ico' type='image/x-icon'/ >
+	<title>CAS QR Attendance System</title>
+	<link rel="stylesheet" href="style.css">
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="qrcode.js"></script>
+</head>
+<body>
+	<form class="box" action="about.html" method="post">
+
+		<img src="logo.png" alt="CAS QR ATTENDANCE SYSTEM" class="logo">
+		
+		<label for="id-input">Enter ID:</label>
+		<input type="text" id="id-input">
+		<button type="button" onclick="verify()">Verify</button>
+		<div id="result"></div>
+		
+
+		<div class="centered-text">
+		  <a href="https://www.facebook.com/RMMCcas/">CAS FB Page</a>
+		  <span>|</span>
+		  <a href="https://www.facebook.com/rmmc.mandaragit">Mandaragit Publication</a>
+		  <span>|</span>
+		  <a href="about.html">About</a>
+		</div>
+
+	</form>
+	
+	
+	
+	
+	
+	<script type="text/javascript">
+		function verify() {
+			// get the entered ID
+			var id = document.getElementById("id-input").value;
+			// read the data from the text file
+			var xhr = new XMLHttpRequest();
+			xhr.open("GET", "https://pastebin.com/raw/wddrJFTm", true);
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					// split the data into lines
+					var lines = xhr.responseText.split("\n");
+					// search for the line with the matching ID
+					for (var i = 0; i < lines.length; i++) {
+						var cols = lines[i].split("|");
+						if (cols[0] === id) {
+							// display the other data in the line
+							var resultDiv = document.getElementById("result");
+							resultDiv.innerHTML = "ID Number: " + cols[0] + "<br>Size: " + cols[4] + "<br>Payment verified.";
+							return;
+						}
+					}
+					// display an error message if the ID is not found
+					var resultDiv = document.getElementById("result");
+					resultDiv.innerHTML = "ID not found.";
+				}
+			};
+			xhr.send();
+		}
+		
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<link rel='icon' href='favicon.ico' type='image/x-icon'/ >
+	<title>CAS QR Attendance System</title>
+	<link rel="stylesheet" href="style.css">
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="qrcode.js"></script>
+	<script src="html2canvas.js"></script>
+</head>
+<body>
+	<form class="box" action="index.html" method="post">
+
+		<img src="logo.png" alt="CAS QR ATTENDANCE SYSTEM" class="logo">
+
+		<input type="text" id="id_number" placeholder="ID NUMBER">
+		<input type="text" id="first_name" placeholder="FIRST NAME" pattern="[A-Za-z]+" required>
+		<input type="text" id="last_name" placeholder="LAST NAME" pattern="[A-Za-z]+" required>
+		<select id="program">
+			<option value="1">COURSE</option>
+			<option value="BAEL">BAEL</option>
+			<option value="BACOMM">BACOMM</option>
+			<option value="BAP">BAP</option>
+			<option value="BPEA">BPEA</option>
+			<option value="BSBIO">BSBIO</option>
+			<option value="BSES">BSES</option>
+			<option value="BSMATH">BSMATH</option>
+			<option value="BSSW">BSSW</option>
+		</select>
+		<input type="button" name="generate" value="GENERATE QR CODE" onclick="generateQRCode()">
+
+
+		  <div id="qrcode" style="display: flex; align-items: center; justify-content: center;"></div>
+
+		<div class="centered-text">
+		  <a href="https://www.facebook.com/RMMCcas/">CAS FB Page</a>
+		  <span>|</span>
+		  <a href="https://www.facebook.com/rmmc.mandaragit">Mandaragit Publication</a>
+		  <span>|</span>
+		  <a href="about.html">About</a>
+		</div>
+		<canvas id="qrcode-canvas" style="display:none;"></canvas>
+
+
+
+
+	</form>
+	
+	
+<!-- 
+	<div class="corner-text">
+		<a href="https://www.facebook.com/rmmc.mandaragit">Visit the Mandaragit FB Page for PALINGAWAN Updates!</a>
+	</div>
+-->
+
+
+
+
+	<script type="text/javascript">
+		var qrcode = null; // global variable to store the QR code instance
+
+		function generateQRCode() {
+			var id_number = document.getElementById("id_number").value;
+			var last_name = document.getElementById("last_name").value;
+			var first_name = document.getElementById("first_name").value;
+			var program = document.getElementById("program").value;
+
+
+
+			if (!id_number.match(/^[0-9]+$/)) {
+				document.getElementById("id_number").style.borderColor = "#cc0000";
+				return;
+			} else {
+				document.getElementById("id_number").style.borderColor = "#fff";
+			}
+
+			if (!last_name.match(/^[A-Za-zñÑáéíóúÁÉÍÓÚüÜäÄëËïÏöÖüÜâÂêÊîÎôÔûÛàÀèÈìÌòÒùÙçÇßŒœÆæ .,-]+$/)) {
+				document.getElementById("last_name").style.borderColor = "#cc0000";
+				return;
+			} else {
+				document.getElementById("last_name").style.borderColor = "#fff";
+			}
+
+			if (!first_name.match(/^[A-Za-zñÑáéíóúÁÉÍÓÚüÜäÄëËïÏöÖüÜâÂêÊîÎôÔûÛàÀèÈìÌòÒùÙçÇßŒœÆæ .,-]+$/)) {
+				document.getElementById("first_name").style.borderColor = "#cc0000";
+				return;
+			} else {
+				document.getElementById("first_name").style.borderColor = "#fff";
+			}
+			
+			if (!/^[a-zA-Z]+$/.test(program)) {
+			  document.getElementById("program").style.borderColor = "#cc0000";
+			  return;
+			} else {
+			  document.getElementById("program").style.borderColor = "#fff";
+			}
+
+
+
+
+
+			var combined_input = id_number + "|" + last_name.toUpperCase() + "|" + first_name.toUpperCase() + "|" + program;
+
+			if (qrcode) { // if a QR code instance already exists, replace it with a new one
+				qrcode.clear(); // clear the existing QR code
+				document.getElementById("qrcode").innerHTML = ""; // clear the content of the div that contains the QR code
+			}
+
+			qrcode = new QRCode(document.getElementById("qrcode"), {
+				width : 250,
+				height : 250,
+
+
+			});
+			qrcode.makeCode(combined_input); // generate the QR code for the combined input
+			
+			// Create a new element to hold the message
+			var messageElement = document.createElement("div");
+			messageElement.innerText = "CAS QR ATTENDANCE\n\nScreenshot this QR code and present it to an officer to record your attendance.\n\n\n\n\n\n\n\n\n" + id_number + "\n" + program + "\n" + last_name + "\n" + first_name;
+			messageElement.style.color = "black";
+			messageElement.style.fontWeight = "bold";
+			messageElement.style.fontSize = "13px";
+			messageElement.style.textAlign = "left";
+			messageElement.style.paddingLeft = "15px"
+
+
+			// Append the message element to the QR container
+			document.getElementById("qrcode").appendChild(messageElement);
+
+			// Render the QR code on a canvas element
+			html2canvas(document.getElementById("qrcode"), {scale: 2}).then(function(canvas) {
+				// Convert the canvas to a PNG image
+				var imgData = canvas.toDataURL("image/png");
+				
+				// Create a download link for the PNG image with the id number in the filename
+				var link = document.createElement('a');
+				link.download = 'qrcode_' + id_number + '.png';
+				link.href = imgData;
+				
+				// Trigger the download
+				link.click();
+			});
+		}
+
+		$("#id_number, #last_name, #first_name").
+			on("keydown", function (e) {
+				if (e.keyCode == 13) { // if the enter key is pressed, don't generate the QR code
+					e.preventDefault();
+				}
+			});
+
+		$("input[name='generate']").on("click", function (e) { // when the generate button is clicked, generate the QR code
+			e.preventDefault();
+			generateQRCode();
+		});
+	</script>
+</body>
+
+</html>
