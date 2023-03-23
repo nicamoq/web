@@ -191,6 +191,7 @@ button[type="button"] {
 }
 
 #result {
+  margin: 10px 30px
   color: white;
   font-size: 15px;
   text-align: left;
