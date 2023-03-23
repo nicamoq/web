@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<link rel='icon' href='favicon.ico' type='image/x-icon'/ >
+	<title>CAS QR Attendance System</title>
+	<link rel="stylesheet" href="style.css">
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="qrcode.js"></script>
+</head>
+<body>
+	<form class="box" action="verify.html" method="post">
+
+		<img src="logo.png" alt="CAS QR ATTENDANCE SYSTEM" class="logo">
+		
+
+		<input type="text" id="id-input" placeholder="ID NUMBER">
+		<button type="button" onclick="verify()">VERIFY</button>
+		<div id="result"></div>
+		
+
+		<div class="centered-text">
+		  <a href="index.html">GENERATE QR CODE</a>
+		  <span>|</span>
+		  <a href="https://www.facebook.com/rmmc.mandaragit">Mandaragit Publication</a>
+		  <span>|</span>
+		  <a href="https://www.facebook.com/RMMCcas/">CAS FB Page</a>
+		  
+		</div>
+
+	</form>
+	
+	
+	
+	
+	
+		<script type="text/javascript">
+		function verify() {
+		  // get the entered ID
+		  var id = document.getElementById("id-input").value;
+		  
+		$("#id-input").on("keydown", function (e) {
+			if (e.keyCode == 13) {
+				e.preventDefault();
+			}
+		});
+
+		  
+		  // check if the ID number is valid
+		  if (!id.match(/^[0-9]+$/)) {
+			document.getElementById("id-input").style.borderColor = "#cc0000";
+			return;
+		  }
+		  
+		  // read the data from the text file
+		  var xhr = new XMLHttpRequest();
+		  xhr.open("GET", "data.txt", true);
+		  xhr.onreadystatechange = function () {
+			if (xhr.readyState === 4 && xhr.status === 200) {
+			  // split the data into lines
+			  var lines = xhr.responseText.split("\n");
+			  // search for the line with the matching ID
+			  for (var i = 0; i < lines.length; i++) {
+				var cols = lines[i].split("|");
+				if (cols[0] === id) {
+				  // display the required data in the line
+				  var resultDiv = document.getElementById("result");
+				  var idLabel = "<strong>ID NUMBER: </strong>";
+				  var courseLabel = "<strong>COURSE: </strong>";
+				  var sizeLabel = "<strong>SIZE: </strong>";
+
+				  var resultDiv = document.getElementById("result");
+				  resultDiv.innerHTML = idLabel + cols[0] + "<br>" + courseLabel + cols[1] + "<br>" + sizeLabel + cols[2];
+
+				  return;
+				}
+			  }
+			  // display an error message if the ID is not found
+			  var resultDiv = document.getElementById("result");
+			  resultDiv.innerHTML = "ID number not found in the DSC masterlist.\n Please verify with your officers if you were included in their lists of sizes.";
+			}
+		  };
+		  xhr.send();
+		}
+		
+
+		</script>
+
+</body>
+</html>
